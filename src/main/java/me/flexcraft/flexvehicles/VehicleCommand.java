@@ -1,5 +1,6 @@
 package me.flexcraft.flexvehicles;
 
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,25 +10,25 @@ import org.bukkit.inventory.ItemStack;
 
 public class VehicleCommand implements CommandExecutor {
 
-    private final double PRICE = 5000;
+    private final Economy econ;
+    private final double price = 5000;
+
+    public VehicleCommand(Economy econ) {
+        this.econ = econ;
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (!(sender instanceof Player p)) return true;
 
-        if (!(sender instanceof Player)) return true;
-        Player player = (Player) sender;
-
-        if (FlexVehicles.getEconomy().getBalance(player) < PRICE) {
-            player.sendMessage("§cНужно 5000 монет!");
+        if (econ.getBalance(p) < price) {
+            p.sendMessage("§cNeed 5000 coins");
             return true;
         }
 
-        FlexVehicles.getEconomy().withdrawPlayer(player, PRICE);
-
-        ItemStack heli = new ItemStack(Material.CARROT_ON_A_STICK);
-        player.getInventory().addItem(heli);
-
-        player.sendMessage("§aВы купили вертолёт!");
+        econ.withdrawPlayer(p, price);
+        p.getInventory().addItem(new ItemStack(Material.CARROT_ON_A_STICK));
+        p.sendMessage("§aHelicopter purchased!");
         return true;
     }
 }
