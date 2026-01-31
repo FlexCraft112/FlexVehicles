@@ -1,6 +1,6 @@
 package me.flexcraft.flexvehicles.vehicle;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,29 +18,22 @@ public class VehicleMovementTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (!player.isOnline() || stand.isDead()) {
+        if (player.isDead() || !stand.isValid()) {
             cancel();
             return;
         }
 
-        // Направление взгляда
-        Vector direction = player.getLocation().getDirection().normalize();
-
-        // Горизонтальное движение
-        Vector move = direction.multiply(0.6);
-
-        // Подъём (SPACE)
-        if (player.isJumping()) {
-            move.setY(0.4);
-        }
-        // Спуск (SHIFT)
-        else if (player.isSneaking()) {
-            move.setY(-0.4);
-        }
-        else {
-            move.setY(0);
+        if (!stand.getPassengers().contains(player)) {
+            stand.remove();
+            cancel();
+            return;
         }
 
-        stand.setVelocity(move);
+        Location loc = stand.getLocation();
+        Vector direction = player.getLocation().getDirection().normalize().multiply(0.6);
+        loc.add(direction);
+        loc.setY(loc.getY() + 0.3); // ВЗЛЁТ КАК ВЕРТОЛЁТ
+
+        stand.teleport(loc);
     }
 }
