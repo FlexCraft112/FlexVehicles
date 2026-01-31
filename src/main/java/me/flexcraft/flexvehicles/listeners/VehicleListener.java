@@ -20,26 +20,20 @@ public class VehicleListener implements Listener {
     @EventHandler
     public void onUse(PlayerInteractEvent e) {
         if (e.getHand() != EquipmentSlot.HAND) return;
-
-        Player player = e.getPlayer();
-
         if (e.getItem() == null) return;
+        if (!(e.getPlayer() instanceof Player p)) return;
 
         if (e.getItem().getType() == Material.CARROT_ON_A_STICK) {
             e.setCancelled(true);
-
-            if (!manager.hasVehicle(player)) {
-                e.getItem().setAmount(e.getItem().getAmount() - 1);
-                manager.spawnVehicle(player);
-            }
+            e.getItem().setAmount(e.getItem().getAmount() - 1);
+            manager.spawnVehicle(p);
         }
     }
 
     @EventHandler
     public void onExit(VehicleExitEvent e) {
-        if (!(e.getExited() instanceof Player)) return;
-
-        Player player = (Player) e.getExited();
-        manager.removeVehicle(player, true);
+        if (e.getExited() instanceof Player p) {
+            manager.removeVehicle(p);
+        }
     }
 }
