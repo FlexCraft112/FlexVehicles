@@ -1,0 +1,7 @@
+vehicle:
+  speed: 0.6
+  item: CARROT_ON_A_STICK
+  name: "&aFlex Vehicle"
+
+settings:
+  auto-return-on-dismount: true
