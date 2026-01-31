@@ -20,8 +20,9 @@ public class VehicleListener implements Listener {
     @EventHandler
     public void onUse(PlayerInteractEvent e) {
         if (e.getHand() != EquipmentSlot.HAND) return;
-        if (!(e.getPlayer() instanceof Player player)) return;
         if (e.getItem() == null) return;
+
+        Player player = e.getPlayer(); // ← ВОТ ТАК ПРАВИЛЬНО
 
         if (e.getItem().getType() == Material.CARROT_ON_A_STICK) {
             e.setCancelled(true);
@@ -35,7 +36,8 @@ public class VehicleListener implements Listener {
 
     @EventHandler
     public void onExit(VehicleExitEvent e) {
-        if (!(e.getExited() instanceof Player player)) return;
-        manager.removeVehicle(player, true);
+        if (e.getExited() instanceof Player player) { // ← ТУТ МОЖНО, потому что getExited() = Entity
+            manager.removeVehicle(player, true);
+        }
     }
 }
